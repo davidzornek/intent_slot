@@ -1,3 +1,4 @@
+from datasets import Dataset
 from datasets.dataset_dict import DatasetDict
 
 from transformers.data.processors.utils import DataProcessor
@@ -60,4 +61,4 @@ class IntentSlotDataProcessor(DataProcessor):
 
         tokenized_inputs["labels"] = labels
 
-        return tokenized_inputs
+        return Dataset.from_dict(tokenized_inputs)
