@@ -42,7 +42,7 @@ class IntentSlotModel(pl.LightningModule):
 
     def tokenize_inputs(self, text_list):
         return self.tokenizer.batch_encode_plus(
-            text_list, padding="longest", truncation=True, return_tensors="pt"
+            text_list, padding="max_length", truncation=True, return_tensors="pt"
         )
 
     def predict(self, text_list):
