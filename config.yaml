@@ -4,4 +4,4 @@ data: "wnut_17"
 max_len: 512
 num_labels: 13
 learning_rate: 2e-5
-batch_size: 4
+batch_size: 1
