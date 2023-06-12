@@ -26,7 +26,7 @@ class IntentSlotDataProcessor(DataProcessor):
             self.test_data = None
 
     def process_data(self):
-    	"""Performas any preprocessing and tokenization necessary"""
+        """Performas any preprocessing and tokenization necessary"""
         if self.train_data:
             self.processed_train_data = self._tokenize_dataset(self.train_data)
         if self.val_data:
@@ -35,19 +35,23 @@ class IntentSlotDataProcessor(DataProcessor):
             self.processed_test_data = self._tokenize_dataset(self.test_data)
 
     def _tokenize_dataset(self, dataset):
-    	"""tokenizes data and aligns labels to account for word splitting and
-    	special tokens"""
+        """tokenizes data and aligns labels to account for word splitting and
+        special tokens"""
         tokenized_inputs = self.tokenizer(dataset["tokens"], is_split_into_words=True)
 
         labels = []
         for i, label in enumerate(dataset[f"ner_tags"]):
-            word_ids = tokenized_inputs.word_ids(batch_index=i)  # Map tokens to their respective word.
+            word_ids = tokenized_inputs.word_ids(
+                batch_index=i
+            )  # Map tokens to their respective word.
             previous_word_idx = None
             label_ids = []
             for word_idx in word_ids:
-                if word_idx is None: # Set the special tokens to -100.
+                if word_idx is None:  # Set the special tokens to -100.
                     label_ids.append(-100)
-                elif word_idx != previous_word_idx:  # Only label the first token of a given word.
+                elif (
+                    word_idx != previous_word_idx
+                ):  # Only label the first token of a given word.
                     label_ids.append(label[word_idx])
                 else:
                     label_ids.append(-100)
