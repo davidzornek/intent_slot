@@ -10,6 +10,8 @@ class IntentSlotConfig:
     base_model: str
     data: str
     max_len: int
+    num_labels: int
+    learning_rate: float
 
 
 def load_yaml_config(path):
