@@ -1,4 +1,4 @@
-from datasets.dataset_dict.DatasetDict
+from datasets.dataset_dict import DatasetDict
 
 from transformers.data.processors.utils import DataProcessor
 from transformers import AutoTokenizer
