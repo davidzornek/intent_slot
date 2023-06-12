@@ -28,6 +28,7 @@ class IntentSlotModel(pl.LightningModule):
         labels = torch.tensor([batch["labels"]])
         logits = self.forward(input_ids, attention_mask)
         loss_fn = nn.CrossEntropyLoss()
+        loss = loss_fn(logits.view(-1, self.num_labels), labels.view(-1))
         self.log("train_loss", loss)
         return loss
 
