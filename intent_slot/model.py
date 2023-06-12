@@ -23,14 +23,16 @@ class IntentSlotModel(pl.LightningModule):
         return logits
 
     def training_step(self, batch, batch_idx):
-        input_ids, attention_mask, labels = batch
+        input_ids = torch.tensor([batch["input_ids"]])
+        attention_mask = torch.tensor([batch["attention_mask"]])
+        labels = torch.tensor([batch["labels"]])
         logits = self.forward(input_ids, attention_mask)
         loss_fn = nn.CrossEntropyLoss()
         self.log("train_loss", loss)
         return loss
 
     def validation_step(self, batch, batch_idx):
-        input_ids, attention_mask, labels = batch
+        input_ids, token_type_ids, attention_mask, labels = batch
         logits = self.forward(input_ids, attention_mask)
         loss_fn = nn.CrossEntropyLoss()
         loss = loss_fn(logits.view(-1, self.num_labels), labels.view(-1))

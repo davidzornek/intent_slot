@@ -67,7 +67,7 @@ class IntentSlotDataProcessor(DataProcessor):
 
 
 class IntentSlotDataModule(pl.LightningDataModule):
-    def __init__(self, data_processor: IntentSlotDataProcessor, batch_size: int = 32):
+    def __init__(self, data_processor: IntentSlotDataProcessor, batch_size: int):
         super().__init__()
         self.data_processor = data_processor
         self.batch_size = batch_size
