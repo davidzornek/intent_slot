@@ -1,8 +1,10 @@
 from datasets import Dataset
 from datasets.dataset_dict import DatasetDict
 
+from torch.utils.data import DataLoader
 from transformers.data.processors.utils import DataProcessor
 from transformers import AutoTokenizer
+import pytorch_lightning as pl
 
 
 class IntentSlotDataProcessor(DataProcessor):
@@ -62,3 +64,24 @@ class IntentSlotDataProcessor(DataProcessor):
         tokenized_inputs["labels"] = labels
 
         return Dataset.from_dict(tokenized_inputs)
+
+
+class IntentSlotDataModule(pl.LightningDataModule):
+    def __init__(self, data_processor: IntentSlotDataProcessor, batch_size: int = 32):
+        super().__init__()
+        self.data_processor = data_processor
+        self.batch_size = batch_size
+
+    def setup(self):
+        self.train_data = self.data_processor.processed_train_data
+        self.val_data = self.data_processor.processed_val_data
+        self.test_data = self.data_processor.processed_test_data
+
+    def train_dataloader(self):
+        return DataLoader(self.train_data, batch_size=self.batch_size)
+
+    def val_dataloader(self):
+        return DataLoader(self.val_data, batch_size=self.batch_size)
+
+    def test_dataloader(self):
+        return DataLoader(self.test_data, batch_size=self.batch_size)
