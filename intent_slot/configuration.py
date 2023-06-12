@@ -12,6 +12,10 @@ class IntentSlotConfig:
     max_len: int
     num_labels: int
     learning_rate: float
+    batch_size: int
+
+    def __post_init__(self):
+        self.learning_rate = float(self.learning_rate)
 
 
 def load_yaml_config(path):

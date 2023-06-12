@@ -40,7 +40,7 @@ class IntentSlotDataProcessor(DataProcessor):
     def _tokenize_dataset(self, dataset):
         """tokenizes data and aligns labels to account for word splitting and
         special tokens"""
-        tokenized_inputs = self.tokenizer(dataset["tokens"], is_split_into_words=True)
+        tokenized_inputs = self.tokenizer(dataset["tokens"], padding="max_length", is_split_into_words=True)
 
         labels = []
         for i, label in enumerate(dataset[f"ner_tags"]):
