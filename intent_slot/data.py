@@ -7,7 +7,7 @@ from transformers import AutoTokenizer
 import pytorch_lightning as pl
 
 
-class IntentSlotDataProcessor(DataProcessor):
+class TokenClassifierDataProcessor(DataProcessor):
     def __init__(self, data: DatasetDict, base_model: str, max_len: int = 512):
         self.data = data
         self.base_model = base_model
@@ -66,8 +66,8 @@ class IntentSlotDataProcessor(DataProcessor):
         return Dataset.from_dict(tokenized_inputs)
 
 
-class IntentSlotDataModule(pl.LightningDataModule):
-    def __init__(self, data_processor: IntentSlotDataProcessor, batch_size: int):
+class TokenClassifierDataModule(pl.LightningDataModule):
+    def __init__(self, data_processor: TokenClassifierDataProcessor, batch_size: int):
         super().__init__()
         self.data_processor = data_processor
         self.batch_size = batch_size

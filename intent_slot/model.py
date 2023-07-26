@@ -5,16 +5,17 @@ import pytorch_lightning as pl
 from transformers import AutoModelForTokenClassification, AutoTokenizer
 
 
-class IntentSlotModel(pl.LightningModule):
+class TokenClassifierModel(pl.LightningModule):
     def __init__(self, base_model, num_labels, learning_rate=2e-5):
         super().__init__()
         self.base_model = base_model
         self.num_labels = num_labels
         self.learning_rate = learning_rate
 
-        self.model = AutoModelForTokenClassification.from_pretrained(
+        self.transformer = AutoModelForTokenClassification.from_pretrained(
             self.base_model, num_labels=self.num_labels
-        )
+        ) # .embeddings
+
         self.tokenizer = AutoTokenizer.from_pretrained(self.base_model)
 
     def forward(self, input_ids, attention_mask):
@@ -52,7 +53,10 @@ class IntentSlotModel(pl.LightningModule):
         inputs = self.tokenize_inputs(text_list)
         input_ids = inputs["input_ids"]
         attention_mask = inputs["attention_mask"]
-        logits = self.forward(input_ids, attention_mask)
+        logits = self.transformer.forward(input_ids, attention_mask).logits
+        logit_list = logits.tolist()
+
+        #DEBUG:
         probabilities = nn.functional.softmax(logits, dim=2)
-        predicted_labels = torch.argmax(probabilities, dim=2)
-        return predicted_labels
+        predicted_labels = torch.argmax(logits, dim=2)
+        return {"logits": logit_list, "prediction": predicted_labels.tolist()}
