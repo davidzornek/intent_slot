@@ -1,0 +1,7 @@
+transformers==4.17.0
+torch==1.11.0
+pytorch-lightning=1.9.5
+jupyter==1.0.0
+black==22.1.0
+flake8==3.7.9
+flask=1.1.1
