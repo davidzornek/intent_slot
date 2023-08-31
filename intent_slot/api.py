@@ -1,46 +1,47 @@
+import json
 from jsonschema import validate
-import flask
+from fastapi import FastAPI
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel
+import uvicorn
 
-from model import TokenClassifierModel
+from model import SequenceClassifierModel
 from config import API_CONFIG#, API_SCHEMA
 
-app = flask.Flask(__name__)
 
-model = TokenClassifierModel(
+class APIRequest(BaseModel):
+    text: str
+
+model = SequenceClassifierModel(
     API_CONFIG["base_model"],
     API_CONFIG["num_labels"],
     API_CONFIG["learning_rate"],
 )
 
+app = FastAPI()
 
-@app.route('/predict', methods=["POST"])
-def predict():
+@app.post('/predict')
+def predict(request: APIRequest):
     """
     Test with:
         curl -X POST http://127.0.0.1:5000/predict
             -H 'Content-Type: application/json'
             -d '{"text": "This is a test."}'
     """
-    if flask.request.method != 'POST':
-        return {"errors": ["Only POSTs supported at this time."]}
+    result = model.predict(text_list=[request.text])
 
-    try:
-        req = flask.request.get_json()
-
-    except Exception as e:
-        return {"errors": [e]}
-
-    result = model.predict(text_list=[req["text"]])
-
-    # try:
-    #     validate(req, schema=API_SCHEMA)
-    # except Exception as e:
-    #     return {"errors": [e]}
-
-    return {
-        "text": req["text"],
-        "prediction": result["prediction"]
-    }
+    return JSONResponse(
+        content = {
+            "text": request.text,
+            "prediction": result["prediction"],
+            "scores": result["scores"]
+        }
+    )
 
 if __name__ == "__main__":
-    app.run()
+    uvicorn.run(
+        app,
+        host="0.0.0.0",
+        port=5000,
+        #debug=True,
+    )

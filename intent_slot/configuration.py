@@ -3,7 +3,7 @@ import yaml
 
 
 @dataclass
-class IntentSlotConfig:
+class ClassifierConfig:
     """Class for configuring an intent-slot model training experiment"""
 
     name: str

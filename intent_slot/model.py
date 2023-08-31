@@ -2,17 +2,20 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import pytorch_lightning as pl
-from transformers import AutoModelForTokenClassification, AutoTokenizer
+from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
 
-class TokenClassifierModel(pl.LightningModule):
+class SequenceClassifierModel(pl.LightningModule):
     def __init__(self, base_model, num_labels, learning_rate=2e-5):
         super().__init__()
         self.base_model = base_model
         self.num_labels = num_labels
         self.learning_rate = learning_rate
+        self.label_list = [f'label_{x}' for x in range(num_labels)]
+        self.label2idx = {label: i for i, label in enumerate(self.label_list)}
+        self.idx2label = {v: k for k, v in self.label2idx.items()}
 
-        self.transformer = AutoModelForTokenClassification.from_pretrained(
+        self.transformer = AutoModelForSequenceClassification.from_pretrained(
             self.base_model, num_labels=self.num_labels
         ) # .embeddings
 
@@ -56,7 +59,13 @@ class TokenClassifierModel(pl.LightningModule):
         logits = self.transformer.forward(input_ids, attention_mask).logits
         logit_list = logits.tolist()
 
-        #DEBUG:
-        probabilities = nn.functional.softmax(logits, dim=2)
-        predicted_labels = torch.argmax(logits, dim=2)
-        return {"logits": logit_list, "prediction": predicted_labels.tolist()}
+        probabilities = nn.functional.softmax(logits, dim=1)
+        predicted_labels = torch.argmax(probabilities, dim=1)
+        return {
+            "logits": logit_list,
+            "prediction": [self.idx2label[x] for x in predicted_labels.tolist()],
+            "scores": [
+                {self.idx2label[i]: p for i, p in enumerate(item_probs.tolist())}
+                for item_probs in probabilities
+            ]
+        }

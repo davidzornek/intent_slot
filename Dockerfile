@@ -11,4 +11,6 @@ RUN pip install -r requirements.txt
 
 COPY intent_slot/ .
 
-CMD ["bash"]
+EXPOSE 5000
+
+CMD ["python", "api.py"]
