@@ -13,6 +13,7 @@ class ClassifierConfig:
     num_labels: int
     learning_rate: float
     batch_size: int
+    seed: int
 
     def __post_init__(self):
         self.learning_rate = float(self.learning_rate)

@@ -5,3 +5,4 @@ max_len: 512
 num_labels: 13
 learning_rate: 2e-5
 batch_size: 1
+seed: 1337

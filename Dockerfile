@@ -9,7 +9,7 @@ COPY config.yaml .
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
-COPY intent_slot/ .
+# COPY intent_slot/ .
 
 EXPOSE 5000
 
