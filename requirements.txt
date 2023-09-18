@@ -8,3 +8,6 @@ fastapi==0.103.0
 uvicorn==0.22.0
 pandas==2.0.3
 lorem-text==2.1
+datasets==2.14.4
+boto3==1.28.45
+wandb==0.15.10

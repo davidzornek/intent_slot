@@ -10,10 +10,11 @@ class ClassifierConfig:
     base_model: str
     data: str
     max_len: int
-    num_labels: int
     learning_rate: float
     batch_size: int
     seed: int
+    max_epochs: int
+    max_steps: int
 
     def __post_init__(self):
         self.learning_rate = float(self.learning_rate)
