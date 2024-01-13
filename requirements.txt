@@ -11,3 +11,7 @@ lorem-text==2.1
 datasets==2.14.4
 boto3==1.28.45
 wandb==0.15.10
+just==0.8.161
+sqlalchemy==2.0.25
+snowflake-sqlalchemy==1.5.1
+snowflake-connector-python==3.6.0
